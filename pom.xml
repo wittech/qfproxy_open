@@ -440,12 +440,6 @@
             </properties>
         </profile>
         <profile>
-            <id>dev</id>
-            <properties>
-                <env.resources>src/main/env_resources/dev</env.resources>
-            </properties>
-        </profile>
-        <profile>
             <id>prod</id>
             <properties>
                 <env.resources>src/main/env_resources/prod</env.resources>
