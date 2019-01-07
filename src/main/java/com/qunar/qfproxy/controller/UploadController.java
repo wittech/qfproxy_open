@@ -1,4 +1,4 @@
-﻿package com.qunar.qfproxy.controller;
+package com.qunar.qfproxy.controller;
 
 import com.qunar.qfproxy.constants.StorageConfig;
 import com.qunar.qfproxy.model.FileType;
@@ -12,11 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-
 import static com.qunar.qfproxy.constants.CodeConstants.*;
 import static com.qunar.qfproxy.utils.ErrorCodeUtil.catchExceptionAndSet;
 import static com.qunar.qfproxy.utils.ErrorCodeUtil.checkParamsAndCode;
