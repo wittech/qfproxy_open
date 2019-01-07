@@ -1,23 +1,24 @@
-package com.qunar.qfproxy.controller;
+﻿package com.qunar.qfproxy.controller;
 
 import com.qunar.qfproxy.constants.StorageConfig;
 import com.qunar.qfproxy.model.FileType;
 import com.qunar.qfproxy.model.JsonResult;
 import com.qunar.qfproxy.utils.DownloadUtils;
+import com.qunar.qfproxy.utils.imgtype.InputStreamWrapper;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 
 import static com.qunar.qfproxy.constants.CodeConstants.*;
+import static com.qunar.qfproxy.utils.ErrorCodeUtil.catchExceptionAndSet;
 import static com.qunar.qfproxy.utils.ErrorCodeUtil.checkParamsAndCode;
 
 @Controller
@@ -58,7 +59,58 @@ public class UploadController {
             return JsonResult.newFailResult("文件已存在", downloadUri);
         }
     }
+  @RequestMapping(value = "/v2/share/upload/{type}", method = RequestMethod.POST)
+    @ResponseBody
+    public JsonResult<?> uploadShare(@RequestParam("name") String key,
+//                                     @RequestParam("size") String size,
+                                     @PathVariable(value = "type") String type,
+                                     @RequestParam(value = "file") MultipartFile file,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response) {
+        return upload(key, key, type, null, null, file, request, response);
 
+    }
+
+
+    public JsonResult<?> upload(@RequestParam(value = "key") String key,
+                                @RequestParam(value = "name", required = false) String name,
+                                @PathVariable(value = "type") String type,
+                                @RequestParam(value = "p", required = false) String platform,
+                                @RequestParam(value = "v", required = false) String clientVer,
+                                @RequestParam(value = "file") MultipartFile file,
+                                HttpServletRequest request,
+                                HttpServletResponse response) {
+        FileType fileType = FileType.of(type);
+        String fileName = file.getOriginalFilename();
+        String contentType = file.getContentType();
+        boolean checkRes = checkParamsAndCode(response, key, ILLEGAL_KEY) && checkParamsAndCode(response, fileType, ILLEGAL_TYPE);
+        if (!checkRes) {
+            LOGGER.error("文件上传失败，key:{},name:{},type:{},原因:参数不正确", key, name, type);
+            return JsonResult.newFailResult("参数不正确");
+        }
+        if (StringUtils.isEmpty(name)) {
+            name = fileName;
+        }
+        String keyWithType = null;
+        try {
+            InputStreamWrapper fileIS = InputStreamWrapper.createBufferWrapper(file.getInputStream());
+            //获取到图片的真实类型
+            String imgRealType = DownloadUtils.handleImgRealType(fileType, contentType, fileIS);
+            keyWithType = DownloadUtils.handleKeyForImg(key, imgRealType);
+            //如果是图片，那么name换成key.realType
+            name = DownloadUtils.handleImgName(name, imgRealType, key);
+            String newFileName = StorageConfig.SWIFT_FOLDER + keyWithType;
+            File saveFile = new File(newFileName);
+            FileUtils.copyInputStreamToFile(fileIS, saveFile);
+            String downUri = DownloadUtils.getDownloadUri("v2", keyWithType, name);
+            return JsonResult.newSuccJsonResult(downUri);
+        } catch (Exception e) {
+            catchExceptionAndSet(request, response, e);
+            LOGGER.error("v2版本上传失败,key[{}],type[{}]", key, type, e);
+            return JsonResult.newFailResult("上传失败");
+        }
+
+    }
 
     private String handleNameAndKey(String key, String name, FileType fileType) {
         if (FileType.FILE.equals(fileType)) {
