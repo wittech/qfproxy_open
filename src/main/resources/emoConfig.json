@@ -54,15 +54,6 @@
       "md5": "4F0E096B614BB4B6AD65394A26B06687"
     },
     {
-      "pkgid": "TrainTicketEmoji",
-      "name": "火车票表情",
-      "file": "hhttp://100.80.128.88:8080/file/v1/emo/d/z/trainemoji.emt",
-      "desc": "扩展表情",
-      "thumb": "hhttp://100.80.128.88:8080/file/v1/emo/d/e/TrainTicketEmoji_conver.gif",
-      "file_size": 3642901,
-      "md5": "5D01865E624115D4E0C91BC657100DAA"
-    },
-    {
       "pkgid": "qunar_camel",
       "name": "去哪儿小驼",
       "file": "http://100.80.128.88:8080/file/v1/emo/d/z/qunar_camel",
