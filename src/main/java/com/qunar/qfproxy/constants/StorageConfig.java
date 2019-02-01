@@ -3,6 +3,7 @@ package com.qunar.qfproxy.constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
@@ -15,16 +16,20 @@ public class StorageConfig {
     private static final Logger LOGGER = LoggerFactory.getLogger(StorageConfig.class);
     private static Properties props;
     public static final String SWIFT_FOLDER = getProperty("storage_folder");
+    public static final String SWIFT_FOLDER_EMO_PACKAGE = getProperty("storage_folder_emo");
 
     @PostConstruct
-    private void initStoreFolder(){
+    private void initStoreFolder() {
         try {
             File f = new File(SWIFT_FOLDER);
             f.setWritable(true, false);
             f.mkdirs();
+            File fEmo = new File(SWIFT_FOLDER_EMO_PACKAGE);
+            fEmo.setWritable(true, false);
+            fEmo.mkdirs();
             LOGGER.info("upload文件件初始化创建成功");
-        }catch (Exception e){
-            LOGGER.error("upload文件件初始化创建失败！异常原因:{}",e);
+        } catch (Exception e) {
+            LOGGER.error("upload文件件初始化创建失败！异常原因:{}", e);
         }
     }
 
