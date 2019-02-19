@@ -438,13 +438,6 @@
 
     <profiles>
         <profile>
-            <id>beta</id>
-            <properties>
-                <env.resources>src/main/env_resources/beta</env.resources>
-                <package.environment>beta</package.environment>
-            </properties>
-        </profile>
-        <profile>
             <id>prod</id>
             <properties>
                 <env.resources>src/main/env_resources/prod</env.resources>
