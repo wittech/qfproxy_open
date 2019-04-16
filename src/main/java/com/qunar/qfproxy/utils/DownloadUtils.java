@@ -14,7 +14,7 @@ public class DownloadUtils {
 
 
     public static String getDownloadUri(String ver, String key, String name) {
-        return String.format(StringUtils.join(Config.PROJECT_HOST_AND_PORT, HttpConstants.DOWNLOAD_PATH_FORMAT, "?name=%s"),
+        return String.format(StringUtils.join(HttpConstants.DOWNLOAD_PATH_FORMAT, "?name=%s"),
                 ver,HttpUtils.urlEncode(key), StringUtils.isEmpty(name) ? "" : HttpUtils.urlEncode(name));
     }
     /**
