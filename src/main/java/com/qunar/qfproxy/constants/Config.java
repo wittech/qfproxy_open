@@ -9,6 +9,7 @@ import java.util.Properties;
 
 public class Config {
     private static Properties props;
+    public static final String PROJECT_HOST_AND_PORT = getProperty("project.host.and.port");
 
     private synchronized static void init() {
         if (props != null) {

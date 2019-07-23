@@ -1,5 +1,6 @@
 package com.qunar.qfproxy.utils;
 
+import com.google.common.base.Strings;
 import com.qunar.qfproxy.constants.Config;
 import com.qunar.qfproxy.constants.HttpConstants;
 import com.qunar.qfproxy.model.FileType;
@@ -12,11 +13,15 @@ public class DownloadUtils {
 //    private static final Logger LOGGER = LoggerFactory.getLogger(DownloadUtils.class);
 
 
-
     public static String getDownloadUri(String ver, String key, String name) {
-        return String.format(StringUtils.join(HttpConstants.DOWNLOAD_PATH_FORMAT, "?name=%s"),
-                ver,HttpUtils.urlEncode(key), StringUtils.isEmpty(name) ? "" : HttpUtils.urlEncode(name));
+        String sufficnt = Config.PROJECT_HOST_AND_PORT;
+        if (Strings.isNullOrEmpty(sufficnt)) {
+            sufficnt = "";
+        }
+        return String.format(StringUtils.join(sufficnt, HttpConstants.DOWNLOAD_PATH_FORMAT, "?name=%s"),
+                ver, HttpUtils.urlEncode(key), StringUtils.isEmpty(name) ? "" : HttpUtils.urlEncode(name));
     }
+
     /**
      * 检查文件是不是已知格式的图片，如果是则返回图片类型
      *

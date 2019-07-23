@@ -92,6 +92,7 @@ public class UploadV2Servlet extends HttpServlet {
             File saveFile = new File(newFileName);
             FileUtils.copyInputStreamToFile(fileIS, saveFile);
             String downUri = DownloadUtils.getDownloadUri("v2", keyWithType, name);
+            LOGGER.info("return the download url {}",downUri);
             return JsonResult.newSuccJsonResult(downUri);
         } catch (Exception e) {
             catchExceptionAndSet(request, response, e);
